@@ -104,13 +104,16 @@ with col4:
 st.header("☁️ Word Cloud of Condition Summaries")
 st.markdown("""The word cloud provides a **quick thematic snapshot** of what patients are most frequently seeking help for, guiding providers on where to focus resources.""")
 def preprocess(text):
-    if pd.isnull(text):
+    if pd.isna(text):
         return ""
+    text = str(text)
     text = text.lower()
-    text = re.sub(r"[^a-z\s]", "", text)
+    text = re.sub(r"[^a-z\s]", " ", text)
+    text = re.sub(r"\s+", " ", text).strip()
     return text
 
-carematch['clean_summary'] = carematch['condition_summary'].apply(preprocess)
+carematch["clean_summary"] = carematch["condition_summary"].apply(preprocess)
+
 text = " ".join(carematch['clean_summary'])
 stopwords = set(STOPWORDS)
 stopwords.update(["need","ongoing","consultation","requesting","follow","patient"])
