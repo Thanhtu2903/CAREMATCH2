@@ -86,7 +86,7 @@ st.pyplot(fig5)
 
 # === Countplots ===
 st.header("📊 Distribution of Categorical Variables")
-col3, col4 = st.columns(2)
+col3, col4, col5 = st.columns(3)
 st.markdown("""**Urgency Score Distribution** is fairly balanced across all five levels, indicating that patients are being assigned urgency ratings in a relatively even manner. 
 **Mental Health Flag** shows a strong imbalance: the vast majority of requests (~85%) are **not flagged for mental health**, while only a small fraction (~15%) are.""")
 with col3:
@@ -99,4 +99,9 @@ with col4:
     st.subheader("Mental Health Flag Distribution")
     fig7, ax7 = plt.subplots(figsize=(8,5))
     sns.countplot(data=carematch, x="mental_health_flag", order=carematch['mental_health_flag'].value_counts().index, ax=ax7)
+    st.pyplot(fig7)
+with col5:
+    st.subheader("Age Distribution")
+    fig7, ax7 = plt.subplots(figsize=(8,5))
+    sns.countplot(data=carematch, x="age", order=carematch['age'].value_counts().index, ax=ax7)
     st.pyplot(fig7)
