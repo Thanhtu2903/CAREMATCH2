@@ -103,20 +103,31 @@ with col4:
 # === Word Cloud ===
 st.header("☁️ Word Cloud of Condition Summaries")
 st.markdown("""The word cloud provides a **quick thematic snapshot** of what patients are most frequently seeking help for, guiding providers on where to focus resources.""")
+import re
+import pandas as pd
+
 def preprocess(text):
+    # Handle missing & non-strings safely
     if pd.isna(text):
         return ""
-    text = str(text)
+    if not isinstance(text, str):
+        # turn lists/tuples into space-joined strings, else just str(...)
+        if isinstance(text, (list, tuple, set)):
+            text = " ".join(map(str, text))
+        else:
+            text = str(text)
+
     text = text.lower()
     text = re.sub(r"[^a-z\s]", " ", text)
     text = re.sub(r"\s+", " ", text).strip()
     return text
 
+# If the column might have trailing spaces or different casing, normalize columns first
+carematch.rename(columns=lambda c: c.strip(), inplace=True)
+
+# Apply robust cleaner
 carematch["clean_summary"] = carematch["condition_summary"].apply(preprocess)
 
-text = " ".join(carematch['clean_summary'])
-stopwords = set(STOPWORDS)
-stopwords.update(["need","ongoing","consultation","requesting","follow","patient"])
 
 wordcloud = WordCloud(width=1200, height=600, background_color="white",
                       stopwords=stopwords, colormap="tab10", collocations=True).generate(text)
