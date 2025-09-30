@@ -17,9 +17,6 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.cluster import MiniBatchKMeans       # works with sparse
 from sklearn.decomposition import TruncatedSVD
 from pathlib import Path
-from wordcloud import WordCloud, STOPWORDS
-import matplotlib.pyplot as plt
-import streamlit as st
 
 # === Load Dataset ===
 carematch = pd.read_csv("carematch_requests.csv")
