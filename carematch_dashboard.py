@@ -86,7 +86,7 @@ st.pyplot(fig5)
 
 # === Countplots ===
 st.header("📊 Distribution of Categorical Variables")
-col3, col4, col5 = st.columns(3)
+col3, col4= st.columns(2)
 st.markdown("""**Urgency Score Distribution** is fairly balanced across all five levels, indicating that patients are being assigned urgency ratings in a relatively even manner. 
 **Mental Health Flag** shows a strong imbalance: the vast majority of requests (~85%) are **not flagged for mental health**, while only a small fraction (~15%) are.""")
 with col3:
@@ -100,8 +100,36 @@ with col4:
     fig7, ax7 = plt.subplots(figsize=(8,5))
     sns.countplot(data=carematch, x="mental_health_flag", order=carematch['mental_health_flag'].value_counts().index, ax=ax7)
     st.pyplot(fig7)
-with col5:
-    st.subheader("Age Distribution")
-    fig7, ax7 = plt.subplots(figsize=(8,5))
-    sns.countplot(data=carematch, x="age", order=carematch['age'].value_counts().index, ax=ax7)
-    st.pyplot(fig7)
+# === Word Cloud ===
+st.header("☁️ Word Cloud of Condition Summaries")
+st.markdown("""The word cloud provides a **quick thematic snapshot** of what patients are most frequently seeking help for, guiding providers on where to focus resources.""")
+def preprocess(text):
+    if pd.isnull(text):
+        return ""
+    text = text.lower()
+    text = re.sub(r"[^a-z\s]", "", text)
+    return text
+
+carematch['clean_summary'] = carematch['condition_summary'].apply(preprocess)
+text = " ".join(carematch['clean_summary'])
+stopwords = set(STOPWORDS)
+stopwords.update(["need","ongoing","consultation","requesting","follow","patient"])
+
+wordcloud = WordCloud(width=1200, height=600, background_color="white",
+                      stopwords=stopwords, colormap="tab10", collocations=True).generate(text)
+
+fig8, ax8 = plt.subplots(figsize=(12,6))
+ax8.imshow(wordcloud, interpolation="bilinear")
+ax8.axis("off")
+st.pyplot(fig8)
+
+# === Case & Provider Counts with Filters ===
+st.header("📊 Case & Provider Counts with Filters")
+st.sidebar.header("🔎 Filters")
+st.markdown(""" 
+- ***Provider Coverage by Location:** How many unique providers are available within each zip code?
+
+- ***Workload Distribution by Month:*** How many patient cases are assigned to each provider on a monthly basis?
+
+- ***Provider Case Volume:*** How many total cases each provider ID is responsible for managing, reflecting workload intensity.""")
+
