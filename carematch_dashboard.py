@@ -101,28 +101,6 @@ with col4:
     sns.countplot(data=carematch, x="mental_health_flag", order=carematch['mental_health_flag'].value_counts().index, ax=ax7)
     st.pyplot(fig7)
 
-# === Word Cloud ===
-st.header("☁️ Word Cloud of Condition Summaries")
-st.markdown("""The word cloud provides a **quick thematic snapshot** of what patients are most frequently seeking help for, guiding providers on where to focus resources.""")
-def preprocess(text):
-    if pd.isnull(text):
-        return ""
-    text = text.lower()
-    text = re.sub(r"[^a-z\s]", "", text)
-    return text
-
-carematch['clean_summary'] = carematch['condition_summary'].apply(preprocess)
-text = " ".join(carematch['clean_summary'])
-stopwords = set(STOPWORDS)
-stopwords.update(["need","ongoing","consultation","requesting","follow","patient"])
-
-wordcloud = WordCloud(width=1200, height=600, background_color="white",
-                      stopwords=stopwords, colormap="tab10", collocations=True).generate(text)
-
-fig8, ax8 = plt.subplots(figsize=(12,6))
-ax8.imshow(wordcloud, interpolation="bilinear")
-ax8.axis("off")
-st.pyplot(fig8)
 
 # === Case & Provider Counts with Filters ===
 st.header("📊 Case & Provider Counts with Filters")
