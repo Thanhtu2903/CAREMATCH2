@@ -17,6 +17,9 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.cluster import MiniBatchKMeans       # works with sparse
 from sklearn.decomposition import TruncatedSVD
 from pathlib import Path
+from wordcloud import WordCloud, STOPWORDS
+import matplotlib.pyplot as plt
+import streamlit as st
 
 # === Load Dataset ===
 carematch = pd.read_csv("carematch_requests.csv")
@@ -129,10 +132,13 @@ carematch.rename(columns=lambda c: c.strip(), inplace=True)
 carematch["clean_summary"] = carematch["condition_summary"].apply(preprocess)
 
 
-wordcloud = WordCloud(width=1200, height=600, background_color="white",
-                      stopwords=stopwords, colormap="tab10", collocations=True).generate(text)
+# Generate and display
+wordcloud = WordCloud(
+    width=1200, height=600, background_color="white",
+    stopwords=stopwords, colormap="tab10", collocations=True
+).generate(text)
 
-fig8, ax8 = plt.subplots(figsize=(12,6))
+fig8, ax8 = plt.subplots(figsize=(12, 6))
 ax8.imshow(wordcloud, interpolation="bilinear")
 ax8.axis("off")
 st.pyplot(fig8)
